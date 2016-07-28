@@ -2,10 +2,30 @@
 #include <allegro5/allegro_native_dialog.h>
 #include <allegro5/allegro_primitives.h>
 
+#include "../headers/face.h"
+#include "../headers/halfedge.h"
+#include "../headers/interpreter.h"
+#include "../headers/vertex.h"
+
+#include <iostream>
+#include <string>
+#include <fstream>
+
+using namespace std;
+
 int main(int argc, char **argv) {
     ALLEGRO_DISPLAY *display = NULL;
     ALLEGRO_COLOR lineColor;
 
+    Interpreter *interpreter = new Interpreter("./input/1.in");
+    string line;
+
+    if (interpreter->File()->is_open()) {
+        cout << "File is open" << endl;
+        while (getline (*(interpreter->File()),line)) {
+          cout << line << endl;
+        }
+    }
 
     if(!al_init())
     {
