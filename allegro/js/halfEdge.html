@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<!--[if gt IE 8]><!-->
+<html>
+<!--<![endif]-->
+
+	<head>
+	    <meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <title>Half Edge</title>
+	    <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame -->
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	    <!--  Mobile viewport scale | Disable user zooming as the layout is optimised -->
+	    <meta content="initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
+	    <link rel="stylesheet" type="text/css" href="style.css">
+	    
+	</head>
+
+	<body onload="draw();">
+		<section>
+		    <div id="leftdiv">
+				<canvas style="border-style: solid;" id="halfedge" width="600" height="600"></canvas>
+			</div>
+		    <div id="rightdiv">
+		    	<div id="title"><strong>Options</strong></div>
+		    	<div class="options">
+					<button onclick="v2e()">From Vertex to Edges</button>
+					<button onclick="v2f()">From Vertex to Faces</button>
+					<button onclick="v2v()">From Vertex to Vertices</button>
+		    	</div>
+		    	<div class="options">
+					<button onclick="e2e()">From Edge to Edges</button>
+					<button onclick="e2f()">From Edge to Faces</button>
+					<button onclick="e2v()">From Edge to Vertices</button>
+		    	</div>
+		    	<div class="options">
+					<button onclick="f2e()">From Face to Edges</button>
+					<button onclick="f2f()">From Face to Faces</button>
+					<button onclick="f2v()">From Face to Vertices</button>
+		    	</div>
+			</div>
+		</section>
+
+	</body>
+
+	<script type="text/javascript">
+		function draw(){
+			var canvas = document.getElementById('halfedge');
+
+			if (canvas.getContext){
+				var ctx = canvas.getContext('2d');
+				ctx.lineWidth = 5;
+
+				ctx.beginPath();
+				ctx.arc(200, 200, 2, 0, 2 * Math.PI, true);
+				ctx.stroke();
+				ctx.beginPath();
+				ctx.arc(200, 300, 2, 0, 2 * Math.PI, true);
+				ctx.stroke();
+				ctx.beginPath();
+				ctx.arc(300, 300, 2, 0, 2 * Math.PI, true);
+				ctx.stroke();
+				ctx.beginPath();
+				ctx.arc(300, 200, 2, 0, 2 * Math.PI, true);
+				ctx.stroke();
+
+				var ArrayEdge = new Array()
+				var ArrayFace = new Array()
+				var ArrayVertex = new Array()
+
+				class Edge {
+					constructor(vert, next, pair, face) {
+						this.vert = vert;
+						this.next = next;
+						this.pair = pair;
+						this.face = face;
+					}
+				}
+		
+				class Face {
+					constructor(he) {
+						this.he = he;
+					}
+				}
+				
+				class Vertex {
+					constructor(x, y, he) {
+						this.x = x;
+						this.y = y;
+						this.he = he;
+					}
+				}
+
+				// lê n vértices (coords, he)
+				ArrayVertex.push(new Vertex(200, 200, 0));
+				ArrayVertex.push(new Vertex(200, 300, 1));
+				ArrayVertex.push(new Vertex(300, 300, 2));
+				ArrayVertex.push(new Vertex(300, 200, 3));
+
+				ArrayFace.push(new Face(0));
+				ArrayFace.push(new Face(3));
+				ArrayFace.push(new Face(6));
+
+				ArrayEdge.push(new Edge(1, 1, 7, 0));
+				ArrayEdge.push(new Edge(2, 2, 6, 0));
+				ArrayEdge.push(new Edge(0, 0, 3, 0));
+				ArrayEdge.push(new Edge(2, 4, 2, 1));
+				ArrayEdge.push(new Edge(3, 5, 9, 1));
+				ArrayEdge.push(new Edge(0, 3, 8, 1));
+				ArrayEdge.push(new Edge(1, 7, 1, 2));
+				ArrayEdge.push(new Edge(0, 8, 0, 2));
+				ArrayEdge.push(new Edge(3, 9, 5, 2));
+				ArrayEdge.push(new Edge(2, 6, 4, 2));
+
+
+				
+
+
+
+
+
+				// bezier dojo
+
+				var P1 = {x: 100, y: 500};
+				var P2 = {x: 200, y: 250};
+				var P3 = {x: 400, y: 350};
+
+				var PN12, PN23;
+				var div = 10;
+				var tam12 = {x: (P2.x - P1.x)/div, y: (P2.y - P1.y)/div};
+				var P12 = P1;
+
+				var tam23 = {x: (P3.x - P2.x)/div, y: (P3.y - P2.y)/div};
+				var P23 = P2;
+				var pBezAnt = P1;
+				for(var i = 0; i<div; i++){
+					PN12 = {x: P1.x + tam12.x*(i+1), y:P1.y + tam12.y*(i+1)};
+					PN23 = {x: P2.x + tam23.x*(i+1), y:P2.y + tam23.y*(i+1)};
+					var tam13 = {
+						x: (PN23.x - PN12.x)/div, 
+						y: (PN23.y - PN12.y)/div};
+					
+					PN13 = {
+						x: PN12.x + tam13.x*(i+1), 
+						y: PN12.y + tam13.y*(i+1)
+					};
+					ctx.beginPath();
+					ctx.moveTo(P12.x,P12.y);
+					ctx.lineTo(PN12.x, PN12.y);
+					ctx.moveTo(P23.x,P23.y);
+					ctx.lineTo(PN23.x, PN23.y);
+
+					ctx.moveTo(pBezAnt.x,pBezAnt.y);
+					ctx.lineTo(PN13.x, PN13.y);
+
+					if (i%2==0)
+						ctx.strokeStyle = '#ff0000';
+					else
+						ctx.strokeStyle = '#0000ff';
+					ctx.stroke();
+					P12 = PN12;
+					P23 = PN23;
+					pBezAnt = PN13;
+				}
+
+				
+
+				// ctx.beginPath();
+				// ctx.moveTo(Pmeio.x, Pmeio.y);
+				// ctx.lineTo(P2.x, P2.y);
+				// ctx.strokeStyle = '#0000ff';
+				// ctx.stroke();
+
+				ctx.beginPath();				
+				ctx.moveTo(100,500);
+				// ctx.bezierCurveTo(200,250,  400,350,  500,100)
+				ctx.strokeStyle = '#000000';
+				ctx.stroke();				
+
+			} else {
+			  window.alert('Sem Suporte');
+			}
+		}
+	</script>
+</html>

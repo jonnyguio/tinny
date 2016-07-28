@@ -1,0 +1,33 @@
+section {
+    margin: auto;
+    padding: 10px;
+}
+div#leftdiv {
+    width: 60%;
+    height: 200px;
+    /*float: left;*/
+}
+div#rightdiv {
+    background-color: #aaa;
+    border: 1px solid #000;
+    /*width: 100px;*/
+    float: right;
+    /*position: absolute;*/
+    margin-right: 5%;
+    /*top: 50%;*/
+    /*transform: translateY(-50%);*/
+}
+
+div#title {
+    text-align: center;
+    font-size: 25px;
+    padding: 10px;
+}
+
+.options {
+    padding: 10px;
+}
+
+button {
+    width: 160px   
+}
