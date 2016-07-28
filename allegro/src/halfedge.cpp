@@ -23,7 +23,7 @@ HalfEdge::HalfEdge(Vertex *nv, HalfEdge *neTwin, HalfEdge *neNext) {
 
 HalfEdge::HalfEdge(Vertex *nv, HalfEdge *neTwin, HalfEdge *neNext, Face *nf) {
     this->v = nv;
-    this->eTwin = neTWin;
+    this->eTwin = neTwin;
     this->eNext = neNext;
     this->f = nf;
 }
@@ -38,4 +38,4 @@ HalfEdge* HalfEdge::ENext() { return this->eNext; }
 void HalfEdge::ENext(HalfEdge *neNext) { this->eNext = neNext; }
 
 Face* HalfEdge::F() { return this->f; }
-void F(Face *nf) { this->f = nf; }
+void HalfEdge::F(Face *nf) { this->f = nf; }

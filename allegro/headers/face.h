@@ -1,6 +1,10 @@
 #ifndef __DGUARD_FACE__
 #define __DGUARD_FACE__
 
+#include <stdlib.h>
+
+class Face;
+
 #include "halfedge.h"
 
 class Face {
@@ -9,10 +13,10 @@ class Face {
 
     public:
         Face();
-        Face(HalfEdge *nv);
+        Face(HalfEdge *nh);
 
-        HalfEdge* V();
-        void V(HalfEdge *nv);
-}
+        HalfEdge* H();
+        void H(HalfEdge *nh);
+};
 
 #endif

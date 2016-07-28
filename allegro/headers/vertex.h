@@ -1,6 +1,8 @@
 #ifndef __DGUARD_VERTEX__
 #define __DGUARD_VERTEX__
 
+#include <stdlib.h>
+
 class Vertex {
     private:
         float x, y;
@@ -13,6 +15,6 @@ class Vertex {
         void X(float nx);
         float Y();
         void Y(float ny);
-}
+};
 
 #endif

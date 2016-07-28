@@ -1,6 +1,10 @@
 #ifndef __DGUARD_HALFEDGE__
 #define __DGUARD_HALFEDGE__
 
+#include <stdlib.h>
+
+class HalfEdge;
+
 #include "vertex.h"
 #include "face.h"
 
@@ -26,6 +30,6 @@ class HalfEdge {
 
         Face* F();
         void F(Face *nf);
-}
+};
 
 #endif

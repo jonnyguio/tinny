@@ -9,5 +9,5 @@ Face::Face(HalfEdge *nh) {
 }
 
 
-HalfEdge* HalfEdge::V() { return this->v; }
-void HalfEdge::V(HalfEdge *nv) { this->v = nv; }
+HalfEdge* Face::H() { return this->h; }
+void Face::H(HalfEdge *nh) { this->h = nh; }
