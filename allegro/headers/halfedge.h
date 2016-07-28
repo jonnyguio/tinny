@@ -1,8 +1,8 @@
 #ifndef __DGUARD_HALFEDGE__
 #define __DGUARD_HALFEDGE__
 
-#include <vertex.h>
-#include <face.h>
+#include "vertex.h"
+#include "face.h"
 
 class HalfEdge {
     private:
@@ -11,6 +11,11 @@ class HalfEdge {
         Face *f;
 
     public:
+        HalfEdge();
+        HalfEdge(Vertex *nv);
+        HalfEdge(Vertex *nv, HalfEdge *neTwin, HalfEdge *neNext);
+        HalfEdge(Vertex *nv, HalfEdge *neTwin, HalfEdge *neNext, Face *nf);
+
         Vertex* V();
         void V(Vertex *nv);
 
