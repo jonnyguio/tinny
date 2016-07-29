@@ -22,15 +22,15 @@ void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*
     Vertex *v;
     Face *f;
 
-    while (cin >> type) {
+    while (this->file >> type) {
         if (type == 'v') {
-            cin >> a >> b;
+            this->file >> a >> b;
             v = new Vertex(a, b);
             vs.push_back(v);
             countV++;
         }
         if (type == 'f') {
-            cin >> a >> b >> c;
+            this->file >> a >> b >> c;
 
             h1 = new HalfEdge(vs[a-1]); h2 = new HalfEdge(vs[b-1]); h3 = new HalfEdge(vs[c-1]);
             h4 = new HalfEdge(vs[b-1], h1); h5 = new HalfEdge(vs[c-1], h2); h6 = new HalfEdge(vs[a-1], h3);

@@ -25,24 +25,23 @@ int main(int argc, char **argv) {
     Interpreter *interpreter = new Interpreter("./input/1.in");
     string line;
 
-    interpreter->read(faces, halfEdges, vertexs);
+    interpreter->read(vertexs, halfEdges, faces);
 
     if(!al_init())
     {
-        al_show_native_message_box(NULL, NULL, NULL, "failed to initialize allegro!", NULL, NULL);
+        al_show_native_message_box(NULL, NULL, NULL, "failed to initialize allegro!", NULL, 0);
         return -1;
     }
 
     if (!al_init_primitives_addon()) {
-        al_show_native_message_box(NULL, NULL, NULL, "failed to initialize primitives!", NULL, NULL);
+        al_show_native_message_box(NULL, NULL, NULL, "failed to initialize primitives!", NULL, 0);
     }
 
     display = al_create_display(640, 480);
 
     if(!display)
     {
-        al_show_native_message_box(NULL, NULL, NULL,
-            "failed to initialize display!", NULL, NULL);
+        al_show_native_message_box(NULL, NULL, NULL, "failed to initialize display!", NULL, 0);
         return -1;
     }
     al_clear_to_color(al_map_rgb(255,255,255));
