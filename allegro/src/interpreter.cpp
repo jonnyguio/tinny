@@ -1,8 +1,6 @@
 #include "../headers/interpreter.h"
 #include <iostream>
 
-using namespace std;
-
 Interpreter::Interpreter(char const *fn) {
     this->filename = fn;
     this->file.open(fn);
@@ -15,38 +13,86 @@ Interpreter::~Interpreter() {
 ifstream* Interpreter::File() { return &(this->file); }
 
 void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*>& fs) {
-    int countV = 0, countH = 0, countF = 0;
+    // int countV = 0, countH = 0, countF = 0;
     char type;
-    float a, b, c;
-    HalfEdge *h1, *h2, *h3, *h4, *h5, *h6;
+    HalfEdge *h1, *h2, *h3;
     Vertex *v;
-    Face *f;
+    // Face *f;
+
+    vector<HalfEdge*> HEvec;
+
+    using Edge = tuple<int,int,int>; 
+    set<Edge> S;
+    vector<vector<int> > faces;
 
     while (this->file >> type) {
         if (type == 'v') {
-            this->file >> a >> b;
-            v = new Vertex(a, b);
+            float a, b, c;
+            this->file >> a >> b >> c;
+            cout << type << ", " << a << ", " << b << ", " << c << endl;
+            v = new Vertex(a, b, c);
             vs.push_back(v);
-            countV++;
+            // countV++;
         }
         if (type == 'f') {
-            this->file >> a >> b >> c;
+            int p1, p2, p3;
+            this->file >> p1 >> p2 >> p3;
+            cout << type << ", " << p1 << ", " << p2 << ", " << p3 << endl;
+            // if (!ccw(p1,p2,p3)) swap(p2,p3);
+            pair<int,int> a(p1,p2), b(p2,p3), c(p3,p2);
 
-            h1 = new HalfEdge(vs[a-1]); h2 = new HalfEdge(vs[b-1]); h3 = new HalfEdge(vs[c-1]);
-            h4 = new HalfEdge(vs[b-1], h1); h5 = new HalfEdge(vs[c-1], h2); h6 = new HalfEdge(vs[a-1], h3);
+            h1 = new HalfEdge(vs[p2-1]); h2 = new HalfEdge(vs[p3-1]); h3 = new HalfEdge(vs[p1-1]);
 
-            hes.push_back(h1); hes.push_back(h2); hes.push_back(h3);
-            hes.push_back(h4); hes.push_back(h5); hes.push_back(h6);
+            HEvec.push_back(h1);
+            cout << HEvec.size() << ", " << p1 << ", " << p2 << endl;
+            auto it = S.find(make_tuple(min(p1,p2), max(p1,p2), -1));
+            if (it != S.end()) {
+                int ind = get<2>(*it);
+                cout << "    tem twin: " << ind << endl;
+                HEvec[ind]->ETwin(HEvec.back());
+                HEvec.back()->ETwin(HEvec[ind]);
+            }
+            S.insert(make_tuple(p1, p2, HEvec.size()-1));
 
-            h1->ENext(h2); h2->ENext(h3); h3->ENext(h1);
-            h4->ENext(h5); h5->ENext(h6); h6->ENext(h4);
+            HEvec.push_back(h2);
+            cout << HEvec.size() << ", " << p2 << ", " << p3 << endl;
+            it = S.find(make_tuple(min(p2,p3), max(p2,p3), -1));
+            if (it != S.end()) {
+                // tem twin
+                int ind = get<2>(*it);
+                cout << "    tem twin: " << ind << endl;
+                HEvec[ind]->ETwin(HEvec.back());
+                HEvec.back()->ETwin(HEvec[ind]);
+            }
+            S.insert(make_tuple(p2, p3, HEvec.size()-1));
 
-            f = new Face(h1);
-            fs.push_back(f);
-            h1->F(f); h2->F(f); h3->F(f); h4->F(f); h5->F(f); h6->F(f);
+            HEvec.push_back(h3);
+            cout << HEvec.size() << ", " << p3 << ", " << p1 << endl;
+            it = S.find(make_tuple(min(p3,p1), max(p3,p1), -1));
+            if (it != S.end()) {
+                // tem twin
+                int ind = get<2>(*it);
+                cout << "    tem twin: " << ind << endl;
+                HEvec[ind]->ETwin(HEvec.back());
+                HEvec.back()->ETwin(HEvec[ind]);
+            }
+            S.insert(make_tuple(p3, p1, HEvec.size()-1));
 
-            countF++;
-            countH += 6;
+
+            // h4 = new HalfEdge(vs[b-1], h1); h5 = new HalfEdge(vs[c-1], h2); h6 = new HalfEdge(vs[a-1], h3);
+
+            // hes.push_back(h1); hes.push_back(h2); hes.push_back(h3);
+            // hes.push_back(h4); hes.push_back(h5); hes.push_back(h6);
+
+            // h1->ENext(h2); h2->ENext(h3); h3->ENext(h1);
+            // h4->ENext(h5); h5->ENext(h6); h6->ENext(h4);
+
+            // f = new Face(h1);
+            // fs.push_back(f);
+            // h1->F(f); h2->F(f); h3->F(f); h4->F(f); h5->F(f); h6->F(f);
+
+            // countF++;
+            // countH += 6;
         }
     }
 

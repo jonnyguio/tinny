@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -Wall -std=c++11
 MAIN = ./bin/main.out
-SRCS = src/main.cpp src/face.cpp src/halfedge.cpp src/vertex.cpp src/interpreter.cpp
+SRCS = src/main.cpp src/face.cpp src/halfedge.cpp src/vertex.cpp src/interpreter.cpp src/drawer.cpp
 OBJS = $(SRCS:.cpp=.o)
 CONFIG = $(shell pkg-config --cflags --libs allegro-5 allegro_color-5 allegro_dialog-5 allegro_main-5 allegro_primitives-5)
 

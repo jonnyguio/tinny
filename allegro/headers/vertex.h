@@ -6,16 +6,18 @@
 class Vertex {
     private:
         int index;
-        float x, y;
+        float x, y, z;
 
     public:
         Vertex();
-        Vertex(float nx, float ny);
+        Vertex(float nx, float ny, float nz);
 
         float X();
         void X(float nx);
         float Y();
         void Y(float ny);
+        float Z();
+        void Z(float nz);
 };
 
 #endif

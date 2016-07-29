@@ -1,7 +1,10 @@
 #ifndef __DGUARD_INTERPRETER__
 #define __DGUARD_INTERPRETER__
 
+#include <algorithm>
 #include <fstream>
+#include <tuple>
+#include <set>
 #include <string>
 #include <vector>
 

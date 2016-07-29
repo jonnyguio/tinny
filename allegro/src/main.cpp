@@ -2,6 +2,7 @@
 #include <allegro5/allegro_native_dialog.h>
 #include <allegro5/allegro_primitives.h>
 
+#include "../headers/drawer.h"
 #include "../headers/face.h"
 #include "../headers/halfedge.h"
 #include "../headers/interpreter.h"
@@ -46,8 +47,11 @@ int main(int argc, char **argv) {
     }
     al_clear_to_color(al_map_rgb(255,255,255));
 
+    // Drawer *drawer = new Drawer(halfEdges, vertexs);
+
     lineColor = al_map_rgb(0,0,0);
     al_draw_line(0, 0, 100, 100, lineColor, 1);
+    
 
     al_flip_display();
     al_rest(5.0);
