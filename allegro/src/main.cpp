@@ -16,6 +16,10 @@
 
 using namespace std;
 
+bool DESENHA = true;
+
+void e2f(Vertex *vertex, HalfEdge* he, Face* face);
+
 void drawPoint(float cx, float cy, ALLEGRO_COLOR color = al_map_rgb(0,0,0), float thickness = 5) {
     al_draw_circle(cx, cy, 1, color, thickness);
 }
@@ -28,8 +32,8 @@ void test(Vertex *v, HalfEdge *h, Face *f) {
     cout << "yay" << endl;
 }
 
-void v2v(Vertex *vertex, HalfEdge* he, Face* face) {
-    he = vertex->H();
+void v2v(Vertex *vertex, HalfEdge* _he, Face* face) {
+    HalfEdge *he = vertex->H();
     drawPoint(he->V()->X(), he->V()->Y(), al_map_rgb(0,255,0));
     do {
         drawPoint(he->ENext()->V()->X(), he->ENext()->V()->Y(), al_map_rgb(255,0,0));
@@ -37,26 +41,22 @@ void v2v(Vertex *vertex, HalfEdge* he, Face* face) {
     } while (he != vertex->H());
 }
 
-void v2e(Vertex *vertex, HalfEdge* he, Face* face) {
-    he = vertex->H();
+void v2e(Vertex *vertex, HalfEdge* _he, Face* face) {
+    HalfEdge *he = vertex->H();
     do {
         drawLine(vertex->X(), vertex->Y(), he->ENext()->V()->X(), he->ENext()->V()->Y(), al_map_rgb(255,0,0), 3);
         he = he->ETwin()->ENext();
     } while (he != vertex->H());
 }
 
-void v2f(Vertex *vertex, HalfEdge* he, Face* face) {
- //    HalfEdge *he = vertex->H();
- //    do {
- //        drawLine(vertex->X(), vertex->Y(), he->ENext()->V()->X(), he->ENext()->V()->Y(), al_map_rgb(0,0,0), 3);
- //        he = he->ETwin()->ENext();
- //    } while (he != vertex->H());    
-
- // HE he = v.he;
- // do {
- //     // log he.f
- //     he = he.twin.next;
- // } while (he != v.he);
+void v2f(Vertex *vertex, HalfEdge* _he, Face* face) {
+    HalfEdge *he = vertex->H();
+    do {
+        e2f(NULL, he, NULL);
+        DESENHA = false;
+        // drawLine(vertex->X(), vertex->Y(), he->ENext()->V()->X(), he->ENext()->V()->Y(), al_map_rgb(0,0,0), 3);
+        he = he->ETwin()->ENext();
+    } while (he != vertex->H());    
 }
 
 void e2v(Vertex *vertex, HalfEdge* he, Face* face) {
@@ -89,13 +89,14 @@ void e2e(Vertex *vertex, HalfEdge* he, Face* face) {
     } while (edge != vertex->H());
 }
 
-void e2f(Vertex *vertex, HalfEdge* he, Face* face) {
-    face = he->F();
-    HalfEdge *edge = face->H();
+void e2f(Vertex *vertex, HalfEdge* he, Face* _face) {
+    Face *face = he->F();
     vector<Vertex*> points;
-    if (edge != NULL) {
+    HalfEdge *edge;
+    if (face != NULL) {
+        edge = face->H();
         do {
-            drawPoint(edge->ETwin()->V()->X(), edge->ETwin()->V()->Y(), al_map_rgb(255, 0, 0));
+            //drawPoint(edge->ETwin()->V()->X(), edge->ETwin()->V()->Y(), al_map_rgb(255, 0, 0));
             points.push_back(edge->ETwin()->V());
             edge = edge->ENext();
         } while (edge != face->H());
@@ -106,8 +107,8 @@ void e2f(Vertex *vertex, HalfEdge* he, Face* face) {
 
     points.clear();
     face = he->ETwin()->F();
-    edge = face->H();
-    if (edge != NULL) {
+    if (face != NULL) {
+        edge = face->H();
         do {
             points.push_back(edge->ETwin()->V());
             edge = edge->ENext();
@@ -117,7 +118,11 @@ void e2f(Vertex *vertex, HalfEdge* he, Face* face) {
     }
 
     Vertex *v1 = he->V(), *v2 = he->ETwin()->V();
-    drawLine(v1->X(), v1->Y(), v2->X(), v2->Y(), al_map_rgb(255,0,0),3);
+    if (DESENHA)
+        drawLine(v1->X(), v1->Y(), v2->X(), v2->Y(), al_map_rgb(255,0,0),3);
+    else
+        drawLine(v1->X(), v1->Y(), v2->X(), v2->Y(), al_map_rgb(0,0,0),1);
+    DESENHA = true;
 }
 
 void f2v(Vertex *vertex, HalfEdge* he, Face* face) {
@@ -144,12 +149,17 @@ void f2f(Vertex *vertex, HalfEdge* he, Face* face) {
     HalfEdge *edge = face->H();
     Vertex *previous = edge->ETwin()->V();
     edge = edge->ENext();
+    vector<Vertex*> points;
+    points.push_back(previous);
     do {
         e2f(vertex, edge, face);
         previous = edge->ETwin()->V();
+        points.push_back(previous);
         edge = edge->ENext();
     } while (edge != face->H());
     e2f(vertex, edge, face);
+    al_draw_filled_triangle(points[0]->X(), points[0]->Y(), points[1]->X(), points[1]->Y(),
+                        points[2]->X(), points[2]->Y(), al_map_rgb(255,255,255));
 
     previous = edge->ETwin()->V();
     edge = edge->ENext();
@@ -181,33 +191,33 @@ int main(int argc, char **argv) {
     int buttonActive = 0;
 
     interpreter->read(vertices, halfEdges, faces);
-    Button *b1 = new Button(500, 25, &v2v);
+    Button *b1 = new Button(500, 25, "v2v", &v2v);
     buttons.push_back(b1);
     b1->V(vertices[0]);
-    Button *b2 = new Button(500, 75, &v2e);
+    Button *b2 = new Button(500, 75, "v2e", &v2e);
     buttons.push_back(b2);
     b2->V(vertices[0]);
-    Button *b3 = new Button(500, 125, &v2f);
+    Button *b3 = new Button(500, 125, "v2f", &v2f);
     buttons.push_back(b3);
     b3->V(vertices[0]);
-    Button *b4 = new Button(500, 175, &e2v);
+    Button *b4 = new Button(500, 175, "e2v", &e2v);
     buttons.push_back(b4);
-    b4->V(vertices[0]);
-    Button *b5 = new Button(500, 225, &e2e);
+    b4->H(halfEdges[0]);
+    Button *b5 = new Button(500, 225, "e2e", &e2e);
     buttons.push_back(b5);
-    b5->V(vertices[0]);
-    Button *b6 = new Button(500, 275, &e2f);
+    b5->H(halfEdges[0]);
+    Button *b6 = new Button(500, 275, "e2f", &e2f);
     buttons.push_back(b6);
-    b6->V(vertices[0]);
-    Button *b7 = new Button(500, 325, &f2v);
+    b6->H(halfEdges[1]);
+    Button *b7 = new Button(500, 325, "f2v", &f2v);
     buttons.push_back(b7);
-    b7->V(vertices[0]);
-    Button *b8 = new Button(500, 375, &f2e);
+    b7->F(faces[0]);
+    Button *b8 = new Button(500, 375, "f2e", &f2e);
     buttons.push_back(b8);
-    b8->V(vertices[0]);
-    Button *b9 = new Button(500, 425, &f2f);
+    b8->F(faces[0]);
+    Button *b9 = new Button(500, 425, "f2f", &f2f);
     buttons.push_back(b9);
-    b9->V(vertices[0]);
+    b9->F(faces[0]);
 
     Vertex::printAll(vertices);
     HalfEdge::printAll(halfEdges);
@@ -249,7 +259,7 @@ int main(int argc, char **argv) {
         }
 
         for (auto button: buttons) {
-            button->draw();
+            button->draw(NULL);
         }
         // for (int i = 0; i  <)
         // b1->draw();
