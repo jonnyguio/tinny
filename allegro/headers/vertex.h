@@ -5,6 +5,7 @@
 
 class Vertex {
     private:
+        int index;
         float x, y;
 
     public:

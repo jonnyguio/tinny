@@ -17,15 +17,12 @@ int main(int argc, char **argv) {
     ALLEGRO_DISPLAY *display = NULL;
     ALLEGRO_COLOR lineColor;
 
+    Face **faces = (Face **) malloc(sizeof(Face*));;
+    HalfEdge **halfEdges = (HalfEdge **) malloc(sizeof(HalfEdge*));
+    Vertex **vertexs = (Vertex **) malloc(sizeof(Vertex*));
+
     Interpreter *interpreter = new Interpreter("./input/1.in");
     string line;
-
-    if (interpreter->File()->is_open()) {
-        cout << "File is open" << endl;
-        while (getline (*(interpreter->File()),line)) {
-          cout << line << endl;
-        }
-    }
 
     if(!al_init())
     {
@@ -34,7 +31,7 @@ int main(int argc, char **argv) {
     }
 
     if (!al_init_primitives_addon()) {
-        al_show_native_message_box(NULL, NULL, NULL, "failed to initialize primiteves!", NULL, NULL);
+        al_show_native_message_box(NULL, NULL, NULL, "failed to initialize primitives!", NULL, NULL);
     }
 
     display = al_create_display(640, 480);

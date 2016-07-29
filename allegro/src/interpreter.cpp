@@ -13,3 +13,7 @@ Interpreter::~Interpreter() {
 }
 
 ifstream* Interpreter::File() { return &(this->file); }
+
+void Interpreter::read(Vertex **vs, HalfEdge **hes, Face **fs) {
+
+}
