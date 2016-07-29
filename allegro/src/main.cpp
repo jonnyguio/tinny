@@ -20,12 +20,15 @@ int main(int argc, char **argv) {
 
     vector<Face*> faces;
     vector<HalfEdge*> halfEdges;
-    vector<Vertex*> vertexs;
+    vector<Vertex*> vertices;
 
     Interpreter *interpreter = new Interpreter("./input/1.in");
     string line;
 
-    interpreter->read(vertexs, halfEdges, faces);
+    interpreter->read(vertices, halfEdges, faces);
+    Vertex::printAll(vertices);
+    HalfEdge::printAll(halfEdges);
+    Face::printAll(faces);
 
     if(!al_init())
     {

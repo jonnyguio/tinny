@@ -2,10 +2,13 @@
 #define __DGUARD_FACE__
 
 #include <stdlib.h>
+#include <vector>
 
 class Face;
 
 #include "halfedge.h"
+
+using namespace std;
 
 class Face {
     private:
@@ -18,7 +21,7 @@ class Face {
         HalfEdge* H();
         void H(HalfEdge *nh);
 
-        bool operator=(const Face& f);
+        static void printAll(vector<Face*>& fs);
 };
 
 #endif

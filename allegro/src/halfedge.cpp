@@ -1,4 +1,7 @@
 #include "../headers/halfedge.h"
+#include <iostream>
+
+using namespace std;
 
 HalfEdge::HalfEdge() {
     this->v = (Vertex *) NULL;
@@ -56,4 +59,14 @@ HalfEdge* HalfEdge::searchHalfEdge(vector<HalfEdge*>& hs, Vertex *v, Face *f) {
         }
     }
     return res;
+}
+
+void HalfEdge::printAll(vector<HalfEdge*>& hs) {
+    for (vector<HalfEdge*>::iterator it = hs.begin(); it != hs.end(); it++) {
+        cout << "Info Half Edge (" << *it << ")" << endl;
+        cout << "\t" << "Vertice:" << (*it)->V() << endl;
+        cout << "\t" << "eTwin:" << (*it)->ETwin() << endl;
+        cout << "\t" << "eNext:" << (*it)->ENext() << endl;
+        cout << "\t" << "Face:" << (*it)->F() << endl;
+    }
 }

@@ -2,6 +2,9 @@
 #define __DGUARD_VERTEX__
 
 #include <stdlib.h>
+#include <vector>
+
+using namespace std;
 
 class Vertex {
     private:
@@ -16,6 +19,8 @@ class Vertex {
         void X(float nx);
         float Y();
         void Y(float ny);
+
+        static void printAll(vector<Vertex*>& vs);
 };
 
 #endif

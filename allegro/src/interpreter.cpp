@@ -35,15 +35,16 @@ void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*
         if (type == 'f') {
             this->file >> a >> b >> c;
 
-
             v1 = new Vector2D(vs[b-1]->X() - vs[a-1]->X(), vs[b-1]->Y() - vs[a-1]->Y());
             v2 = new Vector2D(vs[c-1]->X() - vs[a-1]->X(), vs[c-1]->Y() - vs[a-1]->Y());
 
-            if (v1->dot(v2) < 0) {
+            if (v1->dot(v2) > 0) {
                 aux = b;
                 b = c;
                 c = aux;
             }
+
+            cout << a << " " << b << " " << c << endl;
 
             h1 = new HalfEdge(vs[a-1]); h2 = new HalfEdge(vs[b-1]); h3 = new HalfEdge(vs[c-1]);
 
@@ -73,16 +74,19 @@ void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*
                 }
                 if (counter[0] == 2) {
                     haux = HalfEdge::searchHalfEdge(hes, vs[b-1], fs[counter[3]]);
+                    haux->ETwin(h1);
                     h1->ETwin(haux);
                     break;
                 }
                 if (counter[1] == 2) {
                     haux = HalfEdge::searchHalfEdge(hes, vs[c-1], fs[counter[3]]);
+                    haux->ETwin(h2);
                     h2->ETwin(haux);
                     break;
                 }
                 if (counter[2] == 2) {
                     haux = HalfEdge::searchHalfEdge(hes, vs[a-1], fs[counter[3]]);
+                    haux->ETwin(h3);
                     h3->ETwin(haux);
                     break;
                 }

@@ -36,6 +36,7 @@ class HalfEdge {
         void F(Face *nf);
 
         static HalfEdge* searchHalfEdge(vector<HalfEdge*>& hs, Vertex *v, Face *f);
+        static void printAll(vector<HalfEdge*>& hs);
 };
 
 #endif
