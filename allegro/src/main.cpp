@@ -64,9 +64,21 @@ int main(int argc, char **argv) {
             drawLine(v1->X(), v1->Y(), v2->X(), v2->Y());
         // }
     }
-    for (Vertex *v: vertices) {
-        drawPoint(v->X(), v->Y());
+    for (int i = 0; i < (int) vertices.size(); i++) {
+        Vertex *v = vertices[i];
+        // if (i != 6)
+            drawPoint(v->X(), v->Y());
+        // else
+            // drawPoint(v->X(), v->Y(), al_map_rgb(0,255,0));
     }
+    al_flip_display();
+    al_rest(1.0);
+
+    HalfEdge *edge = face->H();
+    do {
+        drawPoint(edge->ETwin()->V()->X(), edge->ETwin()->V()->Y(), al_map_rgb(255, 0, 0));
+        edge = edge->ENext();
+    } while (edge != face->H());
 
     al_flip_display();
     al_rest(5.0);
