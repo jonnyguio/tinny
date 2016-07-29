@@ -17,7 +17,7 @@ void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*
     char type;
     HalfEdge *h1, *h2, *h3;
     Vertex *v;
-    // Face *f;
+    Face *f;
 
     vector<HalfEdge*> HEvec;
 
@@ -77,6 +77,10 @@ void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*
                 HEvec.back()->ETwin(HEvec[ind]);
             }
             S[Edge(min(p3,p1), max(p3,p1))] = HEvec.size()-1;
+
+            f = new Face(h1);
+            fs.push_back(f);
+            h1->F(f); h2->F(f); h3->F(f);
 
 
             // h4 = new HalfEdge(vs[b-1], h1); h5 = new HalfEdge(vs[c-1], h2); h6 = new HalfEdge(vs[a-1], h3);
