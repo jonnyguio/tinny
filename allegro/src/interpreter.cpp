@@ -19,7 +19,7 @@ void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*
     Vertex *v;
     Face *f;
 
-    vector<HalfEdge*> HEvec;
+    // vector<HalfEdge*> hes;
 
     using Edge = pair<int,int>; 
     map<Edge, int> S;
@@ -43,40 +43,40 @@ void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*
 
             h1 = new HalfEdge(vs[p2-1]); h2 = new HalfEdge(vs[p3-1]); h3 = new HalfEdge(vs[p1-1]);
 
-            HEvec.push_back(h1);
-            cout << HEvec.size()-1 << ", " << p1 << ", " << p2 << endl;
+            hes.push_back(h1);
+            cout << hes.size()-1 << ", " << p1 << ", " << p2 << endl;
             auto it = S.find(Edge(min(p1,p2), max(p1,p2)));
             if (it != S.end()) {
                 int ind = S[Edge(min(p1,p2), max(p1,p2))];
                 cout << "    tem twin: " << ind << endl;
-                HEvec[ind]->ETwin(HEvec.back());
-                HEvec.back()->ETwin(HEvec[ind]);
+                hes[ind]->ETwin(hes.back());
+                hes.back()->ETwin(hes[ind]);
             }
-            S[Edge(min(p1,p2), max(p1,p2))] = HEvec.size()-1;
+            S[Edge(min(p1,p2), max(p1,p2))] = hes.size()-1;
 
-            HEvec.push_back(h2);
-            cout << HEvec.size()-1 << ", " << p2 << ", " << p3 << endl;
+            hes.push_back(h2);
+            cout << hes.size()-1 << ", " << p2 << ", " << p3 << endl;
             it = S.find(Edge(min(p2,p3), max(p2,p3)));
             if (it != S.end()) {
                 // tem twin
                 int ind = S[Edge(min(p2,p3), max(p2,p3))];
                 cout << "    tem twin: " << ind << endl;
-                HEvec[ind]->ETwin(HEvec.back());
-                HEvec.back()->ETwin(HEvec[ind]);
+                hes[ind]->ETwin(hes.back());
+                hes.back()->ETwin(hes[ind]);
             }
-            S[Edge(min(p2,p3), max(p2,p3))] = HEvec.size()-1;
+            S[Edge(min(p2,p3), max(p2,p3))] = hes.size()-1;
 
-            HEvec.push_back(h3);
-            cout << HEvec.size()-1 << ", " << p3 << ", " << p1 << endl;
+            hes.push_back(h3);
+            cout << hes.size()-1 << ", " << p3 << ", " << p1 << endl;
             it = S.find(Edge(min(p3,p1), max(p3,p1)));
             if (it != S.end()) {
                 // tem twin
                 int ind = S[Edge(min(p3,p1), max(p3,p1))];
                 cout << "    tem twin: " << ind << endl;
-                HEvec[ind]->ETwin(HEvec.back());
-                HEvec.back()->ETwin(HEvec[ind]);
+                hes[ind]->ETwin(hes.back());
+                hes.back()->ETwin(hes[ind]);
             }
-            S[Edge(min(p3,p1), max(p3,p1))] = HEvec.size()-1;
+            S[Edge(min(p3,p1), max(p3,p1))] = hes.size()-1;
 
             f = new Face(h1);
             fs.push_back(f);
@@ -99,10 +99,10 @@ void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*
             // countH += 6;
         }
     }
-    for (int i = 0; i < (int) HEvec.size(); i++) {
-        cout << HEvec[i]->V()->X();
-        if (HEvec[i]->ETwin() != NULL)
-            cout << ", " << HEvec[i]->ETwin()->V()->X();
+    for (int i = 0; i < (int) hes.size(); i++) {
+        cout << hes[i]->V()->X();
+        if (hes[i]->ETwin() != NULL)
+            cout << ", " << hes[i]->ETwin()->V()->X();
         cout << endl;
     }
 }

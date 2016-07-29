@@ -29,4 +29,11 @@ void Drawer::drawMesh() {
     for (Vertex *v: vertexs) {
         drawPoint(v->X(), v->Y());
     }
+
+    // al_draw_line(0, 0, 100, 100, al_map_rgb(0,0,0), 1);
+
+
+    // al_flip_display();
+    // al_rest(5.0);
+
 }
