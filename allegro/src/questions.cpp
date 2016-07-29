@@ -1,8 +1,6 @@
 v2v(Vertex *vertex) {
     HalfEdge *he = vertex->H();
     do {
-        // log he.v
-        cout << "meh" << ", " << he->V()->X() << ", " << he->V()->Y() << endl;
         drawPoint(he->ENext()->V()->X(), he->ENext()->V()->Y(), al_map_rgb(255,0,0));
         he = he->ETwin()->ENext();
     } while (he != vertex->H());
@@ -54,9 +52,35 @@ e2e(HalfEdge *he) {
     } while (edge != vertex->H());
 }
 
-e2f(he f) {
-	// log e.f
-	// log e.twin.f
+e2f(HalfEdge* he) {
+    Face *face = he->F();
+    HalfEdge *edge = face->H();
+    vector<Vertex*> points;
+    if (edge != NULL) {
+        do {
+            drawPoint(edge->ETwin()->V()->X(), edge->ETwin()->V()->Y(), al_map_rgb(255, 0, 0));
+            points.push_back(edge->ETwin()->V());
+            edge = edge->ENext();
+        } while (edge != face->H());
+
+        al_draw_filled_triangle(points[0]->X(), points[0]->Y(), points[1]->X(), points[1]->Y(),
+                                points[2]->X(), points[2]->Y(), al_map_rgb(0,255,0));
+    }
+
+    points.clear();
+    face = he->ETwin()->F();
+    edge = face->H();
+    if (edge != NULL) {
+        do {
+            points.push_back(edge->ETwin()->V());
+            edge = edge->ENext();
+        } while (edge != face->H());    
+        al_draw_filled_triangle(points[0]->X(), points[0]->Y(), points[1]->X(), points[1]->Y(),
+                                points[2]->X(), points[2]->Y(), al_map_rgb(0,255,0));
+    }
+
+    Vertex *v1 = he->V(), *v2 = he->ETwin()->V();
+    drawLine(v1->X(), v1->Y(), v2->X(), v2->Y(), al_map_rgb(255,0,0),3);
 }
 
 f2v(Face *face) {
@@ -67,18 +91,19 @@ f2v(Face *face) {
     } while (edge != face->H());
 }
 
-f2e(face f) {
-	HE_edge* edge = face->edge;
-
-	 do {
-
-	    // log edge
-	    edge = edge->next;
-	 
-	 } while (edge != face->edge);
+f2e(Face *face) {
+    HalfEdge *edge = face->H();
+    Vertex *previous = edge->ETwin()->V();
+    edge = edge->ENext();
+    do {
+        drawLine(previous->X(), previous->Y(), edge->ETwin()->V()->X(), edge->ETwin()->V()->Y(), al_map_rgb(255, 0, 0));
+        previous = edge->ETwin()->V();
+        edge = edge->ENext();
+    } while (edge != face->H());
+    drawLine(previous->X(), previous->Y(), edge->ETwin()->V()->X(), edge->ETwin()->V()->Y(), al_map_rgb(255, 0, 0));
 }
 
-f2e(face f) {
+f2f(face f) {
 	HE_edge* edge = face->edge;
 
 	 do {
