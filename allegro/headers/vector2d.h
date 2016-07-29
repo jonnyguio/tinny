@@ -16,6 +16,7 @@ class Vector2D {
         void B(float nb);
 
         float dot(Vector2D *v2);
+        float cross(Vector2D *v2);
 };
 
 #endif

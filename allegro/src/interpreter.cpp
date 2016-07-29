@@ -24,6 +24,7 @@ void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*
     Face *f;
     Vector2D *v1, *v2;
     vector<vector<float>> faces;
+    bool outsideFace = false;
 
     while (this->file >> type) {
         if (type == 'v') {
@@ -38,7 +39,7 @@ void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*
             v1 = new Vector2D(vs[b-1]->X() - vs[a-1]->X(), vs[b-1]->Y() - vs[a-1]->Y());
             v2 = new Vector2D(vs[c-1]->X() - vs[a-1]->X(), vs[c-1]->Y() - vs[a-1]->Y());
 
-            if (v1->dot(v2) > 0) {
+            if (v1->cross(v2) < 0) {
                 aux = b;
                 b = c;
                 c = aux;
@@ -99,6 +100,23 @@ void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*
             delete v1;
             delete v2;
         }
+    }
+
+    counter[0] = 0;
+    for (vector<vector<float>>::iterator it = faces.begin(); it != faces.end(); it++) {
+        counter[1] = 0;
+        for (int i = 0; i < 3; i++) {
+            if (hes[counter[0] * 3 + i]->ETwin() == NULL) {
+                cout << faces[counter[0]][(i + 1) % 3] << endl;
+
+                haux = new HalfEdge(vs[faces[counter[0]][(i + 1) % 3] - 1], hes[counter[0] * 3 + i]);
+                hes[counter[0] * 3 + i]->ETwin(haux);
+                hes.push_back(haux);
+                counter[1]++;
+            }
+        }
+        counter[0]++;
+
     }
 
 }

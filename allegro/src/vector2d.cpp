@@ -18,3 +18,7 @@ void Vector2D::B(float nb) { this->b = nb; }
 float Vector2D::dot(Vector2D *v2) {
     return this->a * v2->A() + this->b * v2->B();
 }
+
+float Vector2D::cross(Vector2D *v2) {
+    return this->a * v2->B() - this->b * v2->A();
+}
