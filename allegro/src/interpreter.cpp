@@ -23,7 +23,7 @@ void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*
 
     using Edge = pair<int,int>; 
     map<Edge, int> S;
-    vector<vector<int> > faces;
+    vector<Vertex*> vertices;
 
     while (this->file >> type) {
         if (type == 'v') {
@@ -31,17 +31,16 @@ void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*
             this->file >> a >> b >> c;
             cout << type << ", " << a << ", " << b << ", " << c << endl;
             v = new Vertex(a, b, c);
-            vs.push_back(v);
+            vertices.push_back(v);
             // countV++;
         }
         if (type == 'f') {
             int p1, p2, p3;
             this->file >> p1 >> p2 >> p3;
             cout << type << ", " << p1 << ", " << p2 << ", " << p3 << endl;
-            // if (!ccw(p1,p2,p3)) swap(p2,p3);
             pair<int,int> a(p1,p2), b(p2,p3), c(p3,p2);
 
-            h1 = new HalfEdge(vs[p2-1]); h2 = new HalfEdge(vs[p3-1]); h3 = new HalfEdge(vs[p1-1]);
+            h1 = new HalfEdge(vertices[p2-1]); h2 = new HalfEdge(vertices[p3-1]); h3 = new HalfEdge(vertices[p1-1]);
 
             hes.push_back(h1);
             cout << hes.size()-1 << ", " << p1 << ", " << p2 << endl;
