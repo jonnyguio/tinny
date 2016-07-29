@@ -10,6 +10,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <vector>
 
 using namespace std;
 
@@ -17,12 +18,14 @@ int main(int argc, char **argv) {
     ALLEGRO_DISPLAY *display = NULL;
     ALLEGRO_COLOR lineColor;
 
-    Face **faces = (Face **) malloc(sizeof(Face*));;
-    HalfEdge **halfEdges = (HalfEdge **) malloc(sizeof(HalfEdge*));
-    Vertex **vertexs = (Vertex **) malloc(sizeof(Vertex*));
+    vector<Face*> faces;
+    vector<HalfEdge*> halfEdges;
+    vector<Vertex*> vertexs;
 
     Interpreter *interpreter = new Interpreter("./input/1.in");
     string line;
+
+    interpreter->read(faces, halfEdges, vertexs);
 
     if(!al_init())
     {

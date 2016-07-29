@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <string>
+#include <vector>
 
 #include "face.h"
 #include "halfedge.h"
@@ -20,7 +21,7 @@ class Interpreter {
 
         ifstream* File();
 
-        void read(Vertex **vs, HalfEdge **hes, Face **fs);
+        void read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*>& fs);
 
 };
 

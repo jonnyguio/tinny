@@ -14,6 +14,13 @@ HalfEdge::HalfEdge(Vertex *nv) {
     this->f = (Face *) NULL;
 }
 
+HalfEdge::HalfEdge(Vertex *nv, HalfEdge *neTwin) {
+    this->v = nv;
+    this->eTwin = neTwin;
+    this->eNext = (HalfEdge *) NULL;
+    this->f = (Face *) NULL;
+}
+
 HalfEdge::HalfEdge(Vertex *nv, HalfEdge *neTwin, HalfEdge *neNext) {
     this->v = nv;
     this->eTwin = neTwin;

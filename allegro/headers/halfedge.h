@@ -17,6 +17,7 @@ class HalfEdge {
     public:
         HalfEdge();
         HalfEdge(Vertex *nv);
+        HalfEdge(Vertex *nv, HalfEdge *neTwin);
         HalfEdge(Vertex *nv, HalfEdge *neTwin, HalfEdge *neNext);
         HalfEdge(Vertex *nv, HalfEdge *neTwin, HalfEdge *neNext, Face *nf);
 
