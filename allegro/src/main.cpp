@@ -118,11 +118,12 @@ int main(int argc, char **argv) {
             }
         }
         if (ev.type == ALLEGRO_EVENT_MOUSE_AXES) {
+            val = 0;
+            buttonActive = val;
             for (vector<Button*>::iterator it = buttons.begin(); it != buttons.end(); it++) {
+                val++;
                 if (((*it)->X() < ev.mouse.x && ev.mouse.x < (*it)->X() + 100) && ((*it)->Y() < ev.mouse.y && ev.mouse.y < (*it)->Y() + 100)) {
-                    if (msState.buttons & 1) {
-                        buttonActive = 1;
-                    }
+                    buttonActive = val;
                 }
             }
         }
