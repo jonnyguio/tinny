@@ -46,3 +46,14 @@ void HalfEdge::ENext(HalfEdge *neNext) { this->eNext = neNext; }
 
 Face* HalfEdge::F() { return this->f; }
 void HalfEdge::F(Face *nf) { this->f = nf; }
+
+HalfEdge* HalfEdge::searchHalfEdge(vector<HalfEdge*>& hs, Vertex *v, Face *f) {
+    HalfEdge *res = (HalfEdge*) NULL;
+    for (vector<HalfEdge*>::iterator it = hs.begin(); it != hs.end(); it++) {
+        if ((*it)->F() == f && (*it)->V() == v) {
+            res = *it;
+            break;
+        }
+    }
+    return res;
+}

@@ -2,11 +2,14 @@
 #define __DGUARD_HALFEDGE__
 
 #include <stdlib.h>
+#include <vector>
 
 class HalfEdge;
 
 #include "vertex.h"
 #include "face.h"
+
+using namespace std;
 
 class HalfEdge {
     private:
@@ -31,6 +34,8 @@ class HalfEdge {
 
         Face* F();
         void F(Face *nf);
+
+        static HalfEdge* searchHalfEdge(vector<HalfEdge*>& hs, Vertex *v, Face *f);
 };
 
 #endif

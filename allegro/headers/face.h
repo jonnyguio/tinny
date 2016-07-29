@@ -17,6 +17,8 @@ class Face {
 
         HalfEdge* H();
         void H(HalfEdge *nh);
+
+        bool operator=(const Face& f);
 };
 
 #endif
