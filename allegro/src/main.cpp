@@ -1,6 +1,8 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_native_dialog.h>
 #include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
 
 #include "../headers/button.h"
 #include "../headers/face.h"
@@ -44,13 +46,14 @@ int main(int argc, char **argv) {
     ALLEGRO_EVENT ev;
     ALLEGRO_COLOR lineColor;
     ALLEGRO_MOUSE_STATE msState;
+    ALLEGRO_FONT *font;
 
     vector<Button*> buttons;
     vector<Face*> faces;
     vector<HalfEdge*> halfEdges;
     vector<Vertex*> vertices;
 
-    Button *b = new Button(500, 50, &v2v);
+    Button *b = new Button(500, 50, "v2v", &v2v);
     buttons.push_back(b);
     Interpreter *interpreter = new Interpreter("./input/2.in");
     string line;
@@ -76,10 +79,13 @@ int main(int argc, char **argv) {
         al_show_native_message_box(NULL, NULL, NULL, "failed to initialize primitives!", NULL, 0);
     }
 
+    al_init_font_addon();
     al_install_keyboard();
     al_install_mouse();
     display = al_create_display(640, 480);
     evQueue = al_create_event_queue();
+    font = al_load_font("arial.ttf", 15, 0);
+    cout << font << endl;
     al_register_event_source(evQueue, al_get_keyboard_event_source());
     al_register_event_source(evQueue, al_get_mouse_event_source());
     al_set_system_mouse_cursor(display, ALLEGRO_SYSTEM_MOUSE_CURSOR_DEFAULT);
@@ -103,12 +109,9 @@ int main(int argc, char **argv) {
             drawPoint(v->X(), v->Y());
         }
 
-        b->draw();
         if (buttonActive > 0) {
             buttons[buttonActive-1]->Func();
         }
-
-        al_flip_display();
 
         al_wait_for_event(evQueue, &ev);
         al_get_mouse_state(&msState);
@@ -117,18 +120,22 @@ int main(int argc, char **argv) {
                 running = false;
             }
         }
-        if (ev.type == ALLEGRO_EVENT_MOUSE_AXES) {
-            val = 0;
-            buttonActive = val;
-            for (vector<Button*>::iterator it = buttons.begin(); it != buttons.end(); it++) {
+
+        val = 0;
+        buttonActive = val;
+        for (vector<Button*>::iterator it = buttons.begin(); it != buttons.end(); it++) {
+            (*it)->draw(font);
+            if (ev.type == ALLEGRO_EVENT_MOUSE_AXES) {
                 val++;
                 if (((*it)->X() < ev.mouse.x && ev.mouse.x < (*it)->X() + 100) && ((*it)->Y() < ev.mouse.y && ev.mouse.y < (*it)->Y() + 100)) {
                     buttonActive = val;
                 }
             }
         }
+        al_flip_display();
 
     }
+    al_destroy_font(font);
 
     al_destroy_display(display);
 
