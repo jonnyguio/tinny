@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
     vector<HalfEdge*> halfEdges;
     vector<Vertex*> vertices;
 
-    Interpreter *interpreter = new Interpreter("./input/1.in");
+    Interpreter *interpreter = new Interpreter("./input/2.in");
     string line;
 
     interpreter->read(vertices, halfEdges, faces);

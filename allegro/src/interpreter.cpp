@@ -66,6 +66,7 @@ void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*
                 counter[0] = 0;
                 counter[1] = 0;
                 counter[2] = 0;
+                cout << "face: " << counter[3] << endl;
                 for (int i = 0; i < 3; i++) {
                     if ((*it)[i] == a || (*it)[i] == b)
                         counter[0]++;
@@ -78,19 +79,16 @@ void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*
                     haux = HalfEdge::searchHalfEdge(hes, vs[b-1], fs[counter[3]]);
                     haux->ETwin(h1);
                     h1->ETwin(haux);
-                    break;
                 }
                 if (counter[1] == 2) {
                     haux = HalfEdge::searchHalfEdge(hes, vs[c-1], fs[counter[3]]);
                     haux->ETwin(h2);
                     h2->ETwin(haux);
-                    break;
                 }
                 if (counter[2] == 2) {
                     haux = HalfEdge::searchHalfEdge(hes, vs[a-1], fs[counter[3]]);
                     haux->ETwin(h3);
                     h3->ETwin(haux);
-                    break;
                 }
                 counter[3]++;
             }
@@ -123,9 +121,7 @@ void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*
     }
 
     for (int i = counter[1]; i > 0; i--) {
-        cout << vertices[counter[1] - i][0] << "," << vertices[counter[1] - i][1] << endl;
         for (int j = counter[1];  j > 0 ; j--) {
-            cout << "\t" << vertices[counter[1] - j][0] << "," << vertices[counter[1] - j][1] << endl;
             if (vertices[counter[1] - i][1] == vertices[counter[1] - j][0] && i != j) {
                 hes[hes.size() - i]->ENext(hes[hes.size() - j]);
             }
