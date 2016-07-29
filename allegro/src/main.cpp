@@ -126,19 +126,19 @@ int main(int argc, char **argv) {
     //         points.push_back(edge->ETwin()->V());
     //         edge = edge->ENext();
     //         cout << "meh5" << endl;
-    //     } while (edge != face->H());    
+    //     } while (edge != face->H());
     //     al_draw_filled_triangle(points[0]->X(), points[0]->Y(), points[1]->X(), points[1]->Y(),
     //                             points[2]->X(), points[2]->Y(), al_map_rgb(0,255,0));
     // }
 
-    Vertex *v1 = he->V(), *v2 = he->ETwin()->V();
+    /*Vertex *v1 = he->V(), *v2 = he->ETwin()->V();
     drawLine(v1->X(), v1->Y(), v2->X(), v2->Y(), al_map_rgb(255,0,0),3);
 
     HalfEdge *edge = face->H();
     do {
         drawPoint(edge->ETwin()->V()->X(), edge->ETwin()->V()->Y(), al_map_rgb(255, 0, 0));
         edge = edge->ENext();
-    } while (edge != face->H());
+    } while (edge != face->H());*/
 
         for (HalfEdge *HE: halfEdges) {
             Vertex *v1 = HE->V(), *v2 = HE->ETwin()->V();
