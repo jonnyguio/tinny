@@ -7,6 +7,7 @@
 #include "../headers/halfedge.h"
 #include "../headers/interpreter.h"
 #include "../headers/vertex.h"
+// #include "questions.cpp"
 
 #include <iostream>
 #include <string>
@@ -27,15 +28,137 @@ void test(Vertex *v, HalfEdge *h, Face *f) {
     cout << "yay" << endl;
 }
 
-void v2v(Vertex *vertex, HalfEdge *h, Face *f) {
-    HalfEdge *he = vertex->H();
+void v2v(Vertex *vertex, HalfEdge* he, Face* face) {
+    he = vertex->H();
     drawPoint(he->V()->X(), he->V()->Y(), al_map_rgb(0,255,0));
     do {
-        // log he.v
-        //cout << "meh" << ", " << he->V()->X() << ", " << he->V()->Y() << endl;
         drawPoint(he->ENext()->V()->X(), he->ENext()->V()->Y(), al_map_rgb(255,0,0));
         he = he->ETwin()->ENext();
     } while (he != vertex->H());
+}
+
+void v2e(Vertex *vertex, HalfEdge* he, Face* face) {
+    he = vertex->H();
+    do {
+        drawLine(vertex->X(), vertex->Y(), he->ENext()->V()->X(), he->ENext()->V()->Y(), al_map_rgb(255,0,0), 3);
+        he = he->ETwin()->ENext();
+    } while (he != vertex->H());
+}
+
+void v2f(Vertex *vertex, HalfEdge* he, Face* face) {
+ //    HalfEdge *he = vertex->H();
+ //    do {
+ //        drawLine(vertex->X(), vertex->Y(), he->ENext()->V()->X(), he->ENext()->V()->Y(), al_map_rgb(0,0,0), 3);
+ //        he = he->ETwin()->ENext();
+ //    } while (he != vertex->H());    
+
+ // HE he = v.he;
+ // do {
+ //     // log he.f
+ //     he = he.twin.next;
+ // } while (he != v.he);
+}
+
+void e2v(Vertex *vertex, HalfEdge* he, Face* face) {
+    Vertex *v1 = he->V(), *v2 = he->ETwin()->V();
+    drawLine(v1->X(), v1->Y(), v2->X(), v2->Y(), al_map_rgb(0,255,0),1);
+    drawPoint(v1->X(), v1->Y(), al_map_rgb(255,0,0));
+    drawPoint(v2->X(), v2->Y(), al_map_rgb(255,0,0));
+}
+
+void e2e(Vertex *vertex, HalfEdge* he, Face* face) {
+    Vertex *v1 = he->V(), *v2 = he->ETwin()->V();
+    drawLine(v1->X(), v1->Y(), v2->X(), v2->Y(), al_map_rgb(0,255,0),3);
+    vertex = he->V();
+    HalfEdge *edge = vertex->H();
+    do {
+        if (edge->ETwin()->V() != he->ETwin()->V()) {
+            v1 = edge->V(), v2 = edge->ETwin()->V();
+            drawLine(v1->X(), v1->Y(), v2->X(), v2->Y(), al_map_rgb(255,0,0),1);
+        }
+        edge = edge->ETwin()->ENext();
+    } while (edge != vertex->H());
+    vertex = he->ETwin()->V();
+    edge = vertex->H();
+    do {
+        if (edge->ETwin()->V() != he->V()) {
+            v1 = edge->V(), v2 = edge->ETwin()->V();
+            drawLine(v1->X(), v1->Y(), v2->X(), v2->Y(), al_map_rgb(255,0,0),1);
+        }
+        edge = edge->ETwin()->ENext();
+    } while (edge != vertex->H());
+}
+
+void e2f(Vertex *vertex, HalfEdge* he, Face* face) {
+    face = he->F();
+    HalfEdge *edge = face->H();
+    vector<Vertex*> points;
+    if (edge != NULL) {
+        do {
+            drawPoint(edge->ETwin()->V()->X(), edge->ETwin()->V()->Y(), al_map_rgb(255, 0, 0));
+            points.push_back(edge->ETwin()->V());
+            edge = edge->ENext();
+        } while (edge != face->H());
+
+        al_draw_filled_triangle(points[0]->X(), points[0]->Y(), points[1]->X(), points[1]->Y(),
+                                points[2]->X(), points[2]->Y(), al_map_rgb(0,255,0));
+    }
+
+    points.clear();
+    face = he->ETwin()->F();
+    edge = face->H();
+    if (edge != NULL) {
+        do {
+            points.push_back(edge->ETwin()->V());
+            edge = edge->ENext();
+        } while (edge != face->H());    
+        al_draw_filled_triangle(points[0]->X(), points[0]->Y(), points[1]->X(), points[1]->Y(),
+                                points[2]->X(), points[2]->Y(), al_map_rgb(0,255,0));
+    }
+
+    Vertex *v1 = he->V(), *v2 = he->ETwin()->V();
+    drawLine(v1->X(), v1->Y(), v2->X(), v2->Y(), al_map_rgb(255,0,0),3);
+}
+
+void f2v(Vertex *vertex, HalfEdge* he, Face* face) {
+    HalfEdge *edge = face->H();
+    do {
+        drawPoint(edge->ETwin()->V()->X(), edge->ETwin()->V()->Y(), al_map_rgb(255, 0, 0));
+        edge = edge->ENext();
+    } while (edge != face->H());
+}
+
+void f2e(Vertex *vertex, HalfEdge* he, Face* face) {
+    HalfEdge *edge = face->H();
+    Vertex *previous = edge->ETwin()->V();
+    edge = edge->ENext();
+    do {
+        drawLine(previous->X(), previous->Y(), edge->ETwin()->V()->X(), edge->ETwin()->V()->Y(), al_map_rgb(255, 0, 0));
+        previous = edge->ETwin()->V();
+        edge = edge->ENext();
+    } while (edge != face->H());
+    drawLine(previous->X(), previous->Y(), edge->ETwin()->V()->X(), edge->ETwin()->V()->Y(), al_map_rgb(255, 0, 0));
+}
+
+void f2f(Vertex *vertex, HalfEdge* he, Face* face) {
+    HalfEdge *edge = face->H();
+    Vertex *previous = edge->ETwin()->V();
+    edge = edge->ENext();
+    do {
+        e2f(vertex, edge, face);
+        previous = edge->ETwin()->V();
+        edge = edge->ENext();
+    } while (edge != face->H());
+    e2f(vertex, edge, face);
+
+    previous = edge->ETwin()->V();
+    edge = edge->ENext();
+    do {
+        drawLine(previous->X(), previous->Y(), edge->ETwin()->V()->X(), edge->ETwin()->V()->Y());
+        previous = edge->ETwin()->V();
+        edge = edge->ENext();
+    } while (edge != face->H());
+    drawLine(previous->X(), previous->Y(), edge->ETwin()->V()->X(), edge->ETwin()->V()->Y());
 }
 
 int main(int argc, char **argv) {
@@ -50,8 +173,6 @@ int main(int argc, char **argv) {
     vector<HalfEdge*> halfEdges;
     vector<Vertex*> vertices;
 
-    Button *b = new Button(500, 50, &v2v);
-    buttons.push_back(b);
     Interpreter *interpreter = new Interpreter("./input/2.in");
     string line;
 
@@ -60,7 +181,33 @@ int main(int argc, char **argv) {
     int buttonActive = 0;
 
     interpreter->read(vertices, halfEdges, faces);
-    b->V(vertices[0]);
+    Button *b1 = new Button(500, 25, &v2v);
+    buttons.push_back(b1);
+    b1->V(vertices[0]);
+    Button *b2 = new Button(500, 75, &v2e);
+    buttons.push_back(b2);
+    b2->V(vertices[0]);
+    Button *b3 = new Button(500, 125, &v2f);
+    buttons.push_back(b3);
+    b3->V(vertices[0]);
+    Button *b4 = new Button(500, 175, &e2v);
+    buttons.push_back(b4);
+    b4->V(vertices[0]);
+    Button *b5 = new Button(500, 225, &e2e);
+    buttons.push_back(b5);
+    b5->V(vertices[0]);
+    Button *b6 = new Button(500, 275, &e2f);
+    buttons.push_back(b6);
+    b6->V(vertices[0]);
+    Button *b7 = new Button(500, 325, &f2v);
+    buttons.push_back(b7);
+    b7->V(vertices[0]);
+    Button *b8 = new Button(500, 375, &f2e);
+    buttons.push_back(b8);
+    b8->V(vertices[0]);
+    Button *b9 = new Button(500, 425, &f2f);
+    buttons.push_back(b9);
+    b9->V(vertices[0]);
 
     Vertex::printAll(vertices);
     HalfEdge::printAll(halfEdges);
@@ -93,58 +240,27 @@ int main(int argc, char **argv) {
     while (running) {
         al_clear_to_color(al_map_rgb(255,255,255));
 
-    // HalfEdge *he = halfEdges[4];
-    // Face *face = he->F();
-    // HalfEdge *edge = face->H();
-    // vector<Vertex*> points;
-    // cout << "meh" << endl;
-    // if (edge != NULL) {
-    //     do {
-    //         drawPoint(edge->ETwin()->V()->X(), edge->ETwin()->V()->Y(), al_map_rgb(255, 0, 0));
-    //         points.push_back(edge->ETwin()->V());
-    //         edge = edge->ENext();
-    //     } while (edge != face->H());
-
-    //     cout << "meh" << endl;
-    //     al_draw_filled_triangle(points[0]->X(), points[0]->Y(), points[1]->X(), points[1]->Y(),
-    //                             points[2]->X(), points[2]->Y(), al_map_rgb(0,255,0));
-    // }
-    // cout << "meh" << endl;
-
-    // points.clear();
-    // face = he->ETwin()->F();
-    // edge = face->H();
-    // if (edge != NULL) {
-    //     cout << "meh4" << endl;
-    //     do {
-    //         points.push_back(edge->ETwin()->V());
-    //         edge = edge->ENext();
-    //         cout << "meh5" << endl;
-    //     } while (edge != face->H());    
-    //     al_draw_filled_triangle(points[0]->X(), points[0]->Y(), points[1]->X(), points[1]->Y(),
-    //                             points[2]->X(), points[2]->Y(), al_map_rgb(0,255,0));
-    // }
-
-    Vertex *v1 = he->V(), *v2 = he->ETwin()->V();
-    drawLine(v1->X(), v1->Y(), v2->X(), v2->Y(), al_map_rgb(255,0,0),3);
-
-    HalfEdge *edge = face->H();
-    do {
-        drawPoint(edge->ETwin()->V()->X(), edge->ETwin()->V()->Y(), al_map_rgb(255, 0, 0));
-        edge = edge->ENext();
-    } while (edge != face->H());
-
         for (HalfEdge *HE: halfEdges) {
             Vertex *v1 = HE->V(), *v2 = HE->ETwin()->V();
-            // if (v1->index() < v2->index()) {
-                drawLine(v1->X(), v1->Y(), v2->X(), v2->Y());
-            // }
+            drawLine(v1->X(), v1->Y(), v2->X(), v2->Y());
         }
         for (Vertex *v: vertices) {
             drawPoint(v->X(), v->Y());
         }
 
-        b->draw();
+        for (auto button: buttons) {
+            button->draw();
+        }
+        // for (int i = 0; i  <)
+        // b1->draw();
+        // b2->draw();
+        // b3->draw();
+        // b4->draw();
+        // b5->draw();
+        // b6->draw();
+        // b7->draw();
+        // b8->draw();
+        // b9->draw();
         if (buttonActive > 0) {
             buttons[buttonActive-1]->Func();
         }

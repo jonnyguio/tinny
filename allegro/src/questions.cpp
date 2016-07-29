@@ -1,35 +1,46 @@
-v2v(Vertex *vertex) {
-    HalfEdge *he = vertex->H();
+
+void drawPoint(float cx, float cy, ALLEGRO_COLOR color, float thickness);
+
+void drawLine(float x1, float y1, float x2, float y2, ALLEGRO_COLOR color, float thickness);
+
+void v2v(Vertex *vertex, HalfEdge* he, Face* face) {
+    he = vertex->H();
     do {
         drawPoint(he->ENext()->V()->X(), he->ENext()->V()->Y(), al_map_rgb(255,0,0));
         he = he->ETwin()->ENext();
     } while (he != vertex->H());
 }
 
-v2e(Vertex *vertex) {
-    HalfEdge *he = vertex->H();
+void v2e(Vertex *vertex, HalfEdge* he, Face* face) {
+    he = vertex->H();
     do {
         drawLine(vertex->X(), vertex->Y(), he->ENext()->V()->X(), he->ENext()->V()->Y(), al_map_rgb(0,0,0), 3);
         he = he->ETwin()->ENext();
     } while (he != vertex->H());
 }
 
-v2f(vertex v) {
-	HE he = v.he;
-	do {
-		// log he.f
-		he = he.twin.next;
-	} while (he != v.he);
-}
+// void v2f(Vertex *vertex, HalfEdge* he, Face* face) {
+//     HalfEdge *he = vertex->H();
+//     do {
+//         drawLine(vertex->X(), vertex->Y(), he->ENext()->V()->X(), he->ENext()->V()->Y(), al_map_rgb(0,0,0), 3);
+//         he = he->ETwin()->ENext();
+//     } while (he != vertex->H());    
 
-e2v(HalfEdge *he) {
+// 	HE he = v.he;
+// 	do {
+// 		// log he.f
+// 		he = he.twin.next;
+// 	} while (he != v.he);
+// }
+
+void e2v(Vertex *vertex, HalfEdge* he, Face* face) {
     Vertex *v1 = he->V(), *v2 = he->ETwin()->V();
     drawLine(v1->X(), v1->Y(), v2->X(), v2->Y(), al_map_rgb(0,255,0),1);
     drawPoint(v1->X(), v1->Y(), al_map_rgb(255,0,0));
     drawPoint(v2->X(), v2->Y(), al_map_rgb(255,0,0));
 }
 
-e2e(HalfEdge *he) {
+void e2e(Vertex *vertex, HalfEdge* he, Face* face) {
     Vertex *v1 = he->V(), *v2 = he->ETwin()->V();
     drawLine(v1->X(), v1->Y(), v2->X(), v2->Y(), al_map_rgb(0,255,0),3);
     Vertex *vertex = he->V();
@@ -52,8 +63,8 @@ e2e(HalfEdge *he) {
     } while (edge != vertex->H());
 }
 
-e2f(HalfEdge* he) {
-    Face *face = he->F();
+void e2f(Vertex *vertex, HalfEdge* he, Face* face) {
+    face = he->F();
     HalfEdge *edge = face->H();
     vector<Vertex*> points;
     if (edge != NULL) {
@@ -83,15 +94,15 @@ e2f(HalfEdge* he) {
     drawLine(v1->X(), v1->Y(), v2->X(), v2->Y(), al_map_rgb(255,0,0),3);
 }
 
-f2v(Face *face) {
-    HalfEdge *edge = face->H();
+void f2v(Vertex *vertex, HalfEdge* he, Face* face) {
+    edge = face->H();
     do {
         drawPoint(edge->ETwin()->V()->X(), edge->ETwin()->V()->Y(), al_map_rgb(255, 0, 0));
         edge = edge->ENext();
     } while (edge != face->H());
 }
 
-f2e(Face *face) {
+void f2e(Vertex *vertex, HalfEdge* he, Face* face) {
     HalfEdge *edge = face->H();
     Vertex *previous = edge->ETwin()->V();
     edge = edge->ENext();
@@ -103,13 +114,23 @@ f2e(Face *face) {
     drawLine(previous->X(), previous->Y(), edge->ETwin()->V()->X(), edge->ETwin()->V()->Y(), al_map_rgb(255, 0, 0));
 }
 
-f2f(face f) {
-	HE_edge* edge = face->edge;
+void f2f(Vertex *vertex, HalfEdge* he, Face* face) {
+    HalfEdge *edge = face->H();
+    Vertex *previous = edge->ETwin()->V();
+    edge = edge->ENext();
+    do {
+        e2f(edge);
+        previous = edge->ETwin()->V();
+        edge = edge->ENext();
+    } while (edge != face->H());
+    e2f(edge);
 
-	 do {
-
-	    // log edge->face
-	    edge = edge->next;
-	 
-	 } while (edge != face->edge);
+    previous = edge->ETwin()->V();
+    edge = edge->ENext();
+    do {
+        drawLine(previous->X(), previous->Y(), edge->ETwin()->V()->X(), edge->ETwin()->V()->Y());
+        previous = edge->ETwin()->V();
+        edge = edge->ENext();
+    } while (edge != face->H());
+    drawLine(previous->X(), previous->Y(), edge->ETwin()->V()->X(), edge->ETwin()->V()->Y());
 }
