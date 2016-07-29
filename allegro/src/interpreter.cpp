@@ -51,6 +51,9 @@ void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*
             h1 = new HalfEdge(vs[a-1]); h2 = new HalfEdge(vs[b-1]); h3 = new HalfEdge(vs[c-1]);
 
             hes.push_back(h1); hes.push_back(h2); hes.push_back(h3);
+            if (vs[a-1]->H() == NULL) { vs[a-1]->H(h1); }
+            if (vs[b-1]->H() == NULL) { vs[b-1]->H(h2); }
+            if (vs[c-1]->H() == NULL) { vs[c-1]->H(h3); }
 
             h1->ENext(h2); h2->ENext(h3); h3->ENext(h1);
 
@@ -62,12 +65,17 @@ void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*
             countH += 6;
 
             counter[3] = 0;
+            /*
+                Esta iteração é para criar associar as twins já existentes (quando triangulos possuem faces ajdacentes).
+            */
             for (vector<vector<float>>::iterator it = faces.begin(); it != faces.end(); it++) {
                 counter[0] = 0;
                 counter[1] = 0;
                 counter[2] = 0;
                 cout << "face: " << counter[3] << endl;
                 for (int i = 0; i < 3; i++) {
+                    // Checa cada caso, se a adjacencia é em AB, BC ou CA
+                    // Funcionar porque é baseado na ordem de inserção
                     if ((*it)[i] == a || (*it)[i] == b)
                         counter[0]++;
                     if ((*it)[i] == b || (*it)[i] == c)
@@ -92,6 +100,7 @@ void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*
                 }
                 counter[3]++;
             }
+            // Adiciona os vértices da face num vector de vector<float>
             vector<float> faceInput;
             faceInput.push_back(a); faceInput.push_back(b); faceInput.push_back(c);
             faces.push_back(faceInput);
@@ -103,9 +112,18 @@ void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*
 
     counter[0] = 0;
     counter[1] = 0;
+    // Cria as twins remanescentes
     for (vector<vector<float>>::iterator it = faces.begin(); it != faces.end(); it++) {
 
         for (int i = 0; i < 3; i++) {
+            /*
+            Contas específicas
+                - counter[0] * 3 + i -> counter[0] é a face atual, * 3 é porque cada face possui 3 half edges, então se estiver na face 2, queremos os pontos 3, 4, 5
+
+                - counter[0] -> face atual
+                - [(i + 1) % 3] -> retorna da face atual, o vértice seguinte ao vértice atual (vértice destino)
+                - [i % 3] -> vértice atual da face
+            */
             if (hes[counter[0] * 3 + i]->ETwin() == NULL) {
                 haux = new HalfEdge(vs[faces[counter[0]][(i + 1) % 3] - 1], hes[counter[0] * 3 + i]);
                 hes[counter[0] * 3 + i]->ETwin(haux);
@@ -120,6 +138,9 @@ void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*
         counter[0]++;
     }
 
+    /*
+        Basicamente uma iteração de cada uma das halfEdges criadas no final (para as que não tinham twins) e associa a sequência a qual elas pertencem, numa comparação Nˆ2 (todas novas com todas novas)
+    */
     for (int i = counter[1]; i > 0; i--) {
         for (int j = counter[1];  j > 0 ; j--) {
             if (vertices[counter[1] - i][1] == vertices[counter[1] - j][0] && i != j) {

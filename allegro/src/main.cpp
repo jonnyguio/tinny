@@ -28,12 +28,16 @@ int main(int argc, char **argv) {
 
     vector<Face*> faces;
     vector<HalfEdge*> halfEdges;
-    vector<Vertex*> vertexs;
+    vector<Vertex*> vertices;
 
     Interpreter *interpreter = new Interpreter("./input/2.in");
     string line;
 
-    interpreter->read(vertexs, halfEdges, faces);
+    interpreter->read(vertices, halfEdges, faces);
+
+    Vertex::printAll(vertices);
+    HalfEdge::printAll(halfEdges);
+    Face::printAll(faces);
 
     if(!al_init())
     {
@@ -60,7 +64,7 @@ int main(int argc, char **argv) {
             drawLine(v1->X(), v1->Y(), v2->X(), v2->Y());
         // }
     }
-    for (Vertex *v: vertexs) {
+    for (Vertex *v: vertices) {
         drawPoint(v->X(), v->Y());
     }
 
