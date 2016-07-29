@@ -27,6 +27,17 @@ void test(Vertex *v, HalfEdge *h, Face *f) {
     cout << "yay" << endl;
 }
 
+void v2v(Vertex *vertex, HalfEdge *h, Face *f) {
+    HalfEdge *he = vertex->H();
+    drawPoint(he->V()->X(), he->V()->Y(), al_map_rgb(0,255,0));
+    do {
+        // log he.v
+        //cout << "meh" << ", " << he->V()->X() << ", " << he->V()->Y() << endl;
+        drawPoint(he->ENext()->V()->X(), he->ENext()->V()->Y(), al_map_rgb(255,0,0));
+        he = he->ETwin()->ENext();
+    } while (he != vertex->H());
+}
+
 int main(int argc, char **argv) {
     ALLEGRO_DISPLAY *display = NULL;
     ALLEGRO_EVENT_QUEUE *evQueue = NULL;
@@ -39,15 +50,17 @@ int main(int argc, char **argv) {
     vector<HalfEdge*> halfEdges;
     vector<Vertex*> vertices;
 
-    Button *b = new Button(500, 50, &test);
+    Button *b = new Button(500, 50, &v2v);
     buttons.push_back(b);
     Interpreter *interpreter = new Interpreter("./input/2.in");
     string line;
 
     bool running = true;
     int val;
+    int buttonActive = 0;
 
     interpreter->read(vertices, halfEdges, faces);
+    b->V(vertices[0]);
 
     Vertex::printAll(vertices);
     HalfEdge::printAll(halfEdges);
@@ -91,6 +104,10 @@ int main(int argc, char **argv) {
         }
 
         b->draw();
+        if (buttonActive > 0) {
+            buttons[buttonActive-1]->Func();
+        }
+
         al_flip_display();
 
         al_wait_for_event(evQueue, &ev);
@@ -104,11 +121,12 @@ int main(int argc, char **argv) {
             for (vector<Button*>::iterator it = buttons.begin(); it != buttons.end(); it++) {
                 if (((*it)->X() < ev.mouse.x && ev.mouse.x < (*it)->X() + 100) && ((*it)->Y() < ev.mouse.y && ev.mouse.y < (*it)->Y() + 100)) {
                     if (msState.buttons & 1) {
-                        (*it)->Func();
+                        buttonActive = 1;
                     }
                 }
             }
         }
+
     }
 
     al_destroy_display(display);

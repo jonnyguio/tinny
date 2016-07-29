@@ -74,7 +74,7 @@ f2e(face f) {
 
 	    // log edge
 	    edge = edge->next;
-	 
+
 	 } while (edge != face->edge);
 }
 
@@ -85,6 +85,6 @@ f2e(face f) {
 
 	    // log edge->face
 	    edge = edge->next;
-	 
+
 	 } while (edge != face->edge);
 }
