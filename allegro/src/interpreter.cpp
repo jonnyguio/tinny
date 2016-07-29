@@ -107,8 +107,6 @@ void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*
         counter[1] = 0;
         for (int i = 0; i < 3; i++) {
             if (hes[counter[0] * 3 + i]->ETwin() == NULL) {
-                cout << faces[counter[0]][(i + 1) % 3] << endl;
-
                 haux = new HalfEdge(vs[faces[counter[0]][(i + 1) % 3] - 1], hes[counter[0] * 3 + i]);
                 hes[counter[0] * 3 + i]->ETwin(haux);
                 hes.push_back(haux);
@@ -116,7 +114,6 @@ void Interpreter::read(vector<Vertex*>& vs, vector<HalfEdge*>& hes, vector<Face*
             }
         }
         counter[0]++;
-
     }
 
 }
